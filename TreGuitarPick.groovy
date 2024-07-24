@@ -25,16 +25,18 @@ HashMap<String,List<Polygon>> polygonsByLayer = s.toPolygons()
 HashMap<String,ArrayList<CSG>> csgByLayers = s.extrudeLayers(10)
 // extrude just one layer to 10mm
 // The string "1-holes" represents the layer name in Inkscape
-def insideParts = s.extrudeLayerToCSG(1,"insides")
+def insideParts = s.extrudeLayerToCSG(0.75,"insides")
 // seperate holes and outsides using layers to differentiate
 // The string "2-outsides" represents the layer name in Inkscape
-def outsideParts = s.extrudeLayerToCSG(1,"outside")
+def outsideParts = s.extrudeLayerToCSG(0.75,"outside")
 
 CSG sig = outsideParts.difference(insideParts).moveToCenter()
 sig = sig.toZMin().movez(0.5)
 sig = sig.rotz(35).movey(3)
 
-return [pick, sig]
+CSG ret = sig.union(pick)
+
+return ret
 
 
 
