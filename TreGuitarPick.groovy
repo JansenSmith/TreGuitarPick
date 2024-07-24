@@ -1,4 +1,5 @@
-
+import eu.mihosoft.vrl.v3d.*
+import eu.mihosoft.vrl.v3d.svg.SVGLoad
 
 // import pick STL
 File pickSTL = ScriptingEngine.fileFromGit(
@@ -6,6 +7,7 @@ File pickSTL = ScriptingEngine.fileFromGit(
 	"pick.stl");
 // Load the .CSG from the disk and cache it in memory
 CSG pick  = Vitamins.get(pickSTL);
+pick = pick.toZMin()
 
 // import sig SVG
 File f = ScriptingEngine
@@ -23,11 +25,15 @@ HashMap<String,List<Polygon>> polygonsByLayer = s.toPolygons()
 HashMap<String,ArrayList<CSG>> csgByLayers = s.extrudeLayers(10)
 // extrude just one layer to 10mm
 // The string "1-holes" represents the layer name in Inkscape
-def insideParts = s.extrudeLayerToCSG(10,"insides")
+def insideParts = s.extrudeLayerToCSG(0.5,"insides")
 // seperate holes and outsides using layers to differentiate
 // The string "2-outsides" represents the layer name in Inkscape
-def outsideParts = s.extrudeLayerToCSG(10,"outside")
+def outsideParts = s.extrudeLayerToCSG(0.5,"outside")
 
-CSG sig = outsideParts.difference(insideParts)
+CSG sig = outsideParts.difference(insideParts).moveToCenter()
+sig = sig.toZMin().movez(1)
 
-return sig
+return [pick, sig]
+
+
+
