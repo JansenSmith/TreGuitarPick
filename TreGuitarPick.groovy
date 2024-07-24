@@ -32,11 +32,12 @@ def outsideParts = s.extrudeLayerToCSG(0.75,"outside")
 
 CSG sig = outsideParts.difference(insideParts).moveToCenter()
 sig = sig.toZMin().movez(0.5)
-sig = sig.rotz(35).movey(3)
+sig = sig.rotz(45).movey(3)
 
 CSG ret = sig.union(pick)
 
-return ret
+//return ret
+return [pick, sig]
 
 
 
